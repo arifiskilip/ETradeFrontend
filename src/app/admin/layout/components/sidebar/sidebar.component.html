@@ -1,0 +1,30 @@
+<div class="list-group">
+  <a
+    routerLink="/admin"
+    (click)="setActiveItem('dashboard')"
+    [ngClass]="{ active: activeItem === 'dashboard' }"
+    class="list-group-item list-group-item-action"
+    >Dashboard</a
+  >
+  <a
+    routerLink="/admin/products"
+    (click)="setActiveItem('products')"
+    [ngClass]="{ active: activeItem === 'products' }"
+    class="list-group-item list-group-item-action"
+    >Ürünler</a
+  >
+  <a
+    routerLink="/admin/customers"
+    (click)="setActiveItem('customers')"
+    [ngClass]="{ active: activeItem === 'customers' }"
+    class="list-group-item list-group-item-action"
+    >Müşteriler</a
+  >
+  <a
+    routerLink="/admin/orders"
+    (click)="setActiveItem('orders')"
+    [ngClass]="{ active: activeItem === 'orders' }"
+    class="list-group-item list-group-item-action"
+    >Siparişler</a
+  >
+</div>

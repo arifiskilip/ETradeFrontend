@@ -1,0 +1,15 @@
+<div class="container-fluid mt-2">
+    <app-header></app-header>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="header">
+          <app-sidebar></app-sidebar>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <router-outlet></router-outlet>
+        <ngx-spinner type="ball-atom"></ngx-spinner>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>

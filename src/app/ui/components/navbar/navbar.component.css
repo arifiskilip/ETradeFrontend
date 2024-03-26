@@ -1,0 +1,31 @@
+.navbar-dark .navbar-nav .nav-link {
+    color: #fff;
+  }
+  .navbar-dark .navbar-nav .nav-link:hover {
+    color: #ffc107; /* Sarı renk */
+  }
+  .navbar-dark .navbar-toggler-icon {
+    background-color: #fff;
+  }
+  .profile-dropdown {
+    position: relative;
+  }
+  .profile-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    display: none;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 0.25rem;
+  }
+  .profile-dropdown:hover .profile-dropdown-menu {
+    display: block;
+  }
