@@ -33,6 +33,7 @@ export class GenericHttpClientService {
 
   private handleError(err: any): Observable<never> {
     this.spinner.hide();
+    console.log(err)
     const errorMessage = (err.error && err.error.message) ? err.error.message : 'Bir hata oluştu.';
     this.toastr.error(errorMessage, "Hata");
     return throwError(errorMessage);

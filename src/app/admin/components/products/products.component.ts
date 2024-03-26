@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomeErrorMessages } from '../../../common/errorMessages/customeErrorMessages';
 import { ValidDirective } from '../../../common/valid.directive';
 import { ToastrService } from 'ngx-toastr';
+import { PaginatedModel } from '../../../models/paginatedModel';
 
 @Component({
     selector: 'app-products',
@@ -24,10 +25,22 @@ export class ProductsComponent implements OnInit {
     this.createProductForm();
   }
 
-  products:Product[]=[];
+  paginatedProduct:PaginatedModel<Product[]> = new PaginatedModel<Product[]>();
   searchText:string="";
   productForm:FormGroup;
   errorMessages:CustomeErrorMessages = new CustomeErrorMessages();
+  pageSize: number = 10;
+
+  // Mevcut sayfa numarası
+  currentPage: number = 1;
+
+  // Toplam sayfa sayısı
+  totalPages: number;
+
+  // Sayfalanmış ve görüntülenen ürünler
+  displayedItems: any[] = [];
+
+  selectedCount:number=5;
 
   constructor(
     private spinner:NgxSpinnerService,
@@ -35,14 +48,16 @@ export class ProductsComponent implements OnInit {
     private datePipe:DatePipe,
     private formBuilder:FormBuilder,
     private toastr:ToastrService
-  ) {}
+  ) {
+  }
 
 
 
   getAll(){
     this.spinner.show();
-    this.http.get<Product[]>("Products/GetAll").subscribe(res=>{
-      this.products =res;
+    this.http.get<PaginatedModel<Product[]>>(`Products/GetAll?pageIndex=${this.currentPage}&pageSize=${this.selectedCount}`).subscribe(res=>{
+      this.paginatedProduct =res;
+      this.totalPages=res.pagination.totalPages;
     })
   }
 
@@ -77,4 +92,63 @@ export class ProductsComponent implements OnInit {
       this.productForm.reset();
     }
   }
+
+  //Pagination
+
+  // Sayfaya git
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.getAll();
+    }
+  }
+
+  // Önceki sayfaya git
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.getAll();
+    }
+  }
+
+  // Sonraki sayfaya git
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.getAll();
+    }
+  }
+
+  // İlk sayfaya git
+  goToFirstPage() {
+    this.currentPage = 1;
+    this.getAll();
+  }
+
+  // Son sayfaya git
+  goToLastPage() {
+    this.currentPage = this.totalPages;
+    this.getAll();
+  }
+
+  // Sayfa numaralarını döndürür
+  getPageNumbers(): number[] {
+    const pageNumbers = [];
+    const maxPagesToShow = 10; // Sayfa numaralarının maksimum gösterileceği miktarı belirleyin
+    const startPage = Math.max(1, this.currentPage - Math.floor(maxPagesToShow / 2));
+    const endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  }
+  // Kaç adet listeleneceğini beliritir
+  goToChangeSelectedCount(){
+    this.getAll();
+  }
+    // Başlangıç indisini hesaplar
+    calculateStartIndex(): number {
+      return (this.currentPage - 1) * this.selectedCount + 1;
+    }
 }

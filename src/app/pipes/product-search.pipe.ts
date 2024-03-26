@@ -11,7 +11,7 @@ export class ProductSearchPipe implements PipeTransform {
     if(text==null){
       return value;
     }
-    return value.filter(x=> x.name.toLowerCase().includes(text.toLowerCase()) || 
+    return value?.filter(x=> x.name.toLowerCase().includes(text.toLowerCase()) || 
      x.price.toString().toLowerCase().includes(text.toLowerCase())|| 
      x.stock.toString().toLowerCase().includes(text.toLowerCase()));
   }
