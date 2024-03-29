@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Inject, Injectable, inject } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, catchError, tap, throwError } from 'rxjs';
+import { EMPTY, Observable, catchError, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +23,19 @@ export class GenericHttpClientService {
     );
   }
 
-  post<T>(url: string, model: any): Observable<T> {
+  post<T>(url: string, model?: any): Observable<T> {
     return this.http.post<T>(this.apiUrl + url, model).pipe(
       tap(_ => this.spinner.hide()),
-      catchError(err => this.handleError(err))
+      catchError(
+        err => this.handleError(err))
+    );
+  }
+  
+  delete(url:string,id:string){
+    return this.http.delete(this.apiUrl + url+id).pipe(
+      tap(_ => this.spinner.hide()),
+      catchError(
+        err => this.handleError(err))
     );
   }
 
@@ -36,6 +45,6 @@ export class GenericHttpClientService {
     console.log(err)
     const errorMessage = (err.error && err.error.message) ? err.error.message : 'Bir hata oluştu.';
     this.toastr.error(errorMessage, "Hata");
-    return throwError(errorMessage);
+    return EMPTY;
   }
 }

@@ -10,6 +10,8 @@ import { CustomeErrorMessages } from '../../../common/errorMessages/customeError
 import { ValidDirective } from '../../../common/valid.directive';
 import { ToastrService } from 'ngx-toastr';
 import { PaginatedModel } from '../../../models/paginatedModel';
+import { Router } from '@angular/router';
+import { SwalService } from '../../../services/swal.service';
 
 @Component({
     selector: 'app-products',
@@ -47,7 +49,9 @@ export class ProductsComponent implements OnInit {
     private http:GenericHttpClientService,
     private datePipe:DatePipe,
     private formBuilder:FormBuilder,
-    private toastr:ToastrService
+    private toastr:ToastrService,
+    private router:Router,
+    private swal:SwalService
   ) {
   }
 
@@ -66,6 +70,16 @@ export class ProductsComponent implements OnInit {
     this.http.post("Products/Add",product).subscribe(res=>{
       this.toastr.success("Ekleme işlemi başarılı!","Başarılı!")
       this.getAll();
+    })
+  }
+
+  delete(product:Product){
+    this.swal.callSwal(`'${product.name}' adlı ürünü silmek istediğinizden eminmisiniz?
+    `,"Ürün silinecektir",'Evet',()=>{
+      this.http.delete(`Products/Delete?id=`,product.id).subscribe((res)=>{
+        this.toastr.success("Silme işlemi başarılı!","Başarılı");
+        this.getAll();
+      });
     })
   }
 
@@ -100,6 +114,7 @@ export class ProductsComponent implements OnInit {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.getAll();
+      this.routerNavigate();
     }
   }
 
@@ -108,6 +123,7 @@ export class ProductsComponent implements OnInit {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.getAll();
+      this.routerNavigate();
     }
   }
 
@@ -116,6 +132,7 @@ export class ProductsComponent implements OnInit {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.getAll();
+      this.routerNavigate();
     }
   }
 
@@ -123,12 +140,14 @@ export class ProductsComponent implements OnInit {
   goToFirstPage() {
     this.currentPage = 1;
     this.getAll();
+    this.routerNavigate();
   }
 
   // Son sayfaya git
   goToLastPage() {
     this.currentPage = this.totalPages;
     this.getAll();
+    this.routerNavigate();
   }
 
   // Sayfa numaralarını döndürür
@@ -146,9 +165,16 @@ export class ProductsComponent implements OnInit {
   // Kaç adet listeleneceğini beliritir
   goToChangeSelectedCount(){
     this.getAll();
+    this.routerNavigate();
   }
     // Başlangıç indisini hesaplar
     calculateStartIndex(): number {
       return (this.currentPage - 1) * this.selectedCount + 1;
+    }
+
+    routerNavigate(){
+      this.router.navigate(['/admin/products'],{
+        queryParams:{pageIndex:this.currentPage,pageSize:this.selectedCount}
+      })
     }
 }
