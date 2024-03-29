@@ -65,9 +65,9 @@ export class ProductsComponent implements OnInit {
     })
   }
 
-  add(product:Product){
+  add(product:FormData){
     this.spinner.show();
-    this.http.post("Products/Add",product).subscribe(res=>{
+    this.http.post("Products/AddV2",product).subscribe(res=>{
       this.toastr.success("Ekleme işlemi başarılı!","Başarılı!")
       this.getAll();
     })
@@ -93,6 +93,7 @@ export class ProductsComponent implements OnInit {
       name:["",[Validators.required,Validators.minLength(3),Validators.maxLength(50)]],
       price:["",[Validators.required,Validators.min(0),Validators.max(1000)]],
       stock:["",[Validators.required,Validators.min(0),Validators.max(500)]],
+      images:[[],Validators.required]
     })
   }
 
@@ -102,7 +103,16 @@ export class ProductsComponent implements OnInit {
 
   addProduct(){
     if(this.productForm.valid){
-      this.add(this.productForm.value)
+      console.log(this.productForm.value)
+      const formData : FormData = new FormData();
+      formData.append("name",this.name.value);
+      formData.append("price",this.price.value);
+      formData.append("stock",this.stock.value);
+      for (let index = 0; index < this.images.length; index++) {
+        formData.append("images",this.images[index]);
+      }
+      this.add(formData)
+      console.log(formData);
       this.productForm.reset();
     }
   }
@@ -177,4 +187,43 @@ export class ProductsComponent implements OnInit {
         queryParams:{pageIndex:this.currentPage,pageSize:this.selectedCount}
       })
     }
+
+    // Images
+    images: File[] = [];
+    imageUrls: any[] = [];
+    getImages(event: any) {
+      for (let i = 0; i < event.target.files.length; i++) {
+        const file = event.target.files[i];
+        if (this.validateFileType(file)) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+  
+          reader.onload = () => {
+            const imageUrl = reader.result as string;
+            this.addImage(imageUrl, file);
+          }
+        } else {
+          console.error('Geçersiz dosya türü: ', file.type);
+        }
+      }
+    }
+  
+    validateFileType(file: File): boolean {
+      // Sadece belirli dosya türlerini kabul edin (örneğin, resim dosyaları)
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      return allowedTypes.includes(file.type);
+    }
+  
+    addImage(imageUrl: string, file: any) {
+      this.imageUrls.push({ imageUrl: imageUrl, name: file.name, size: file.size });
+      this.images.push(file); // Reactive formdaki images alanına dosyayı ekleyin
+      this.productForm.get('images').setValue(this.images); // Reactive formdaki images alanını güncelleyin
+    }
+  
+    removeImage(index: number) {
+      this.imageUrls.splice(index, 1);
+      this.images.splice(index, 1); // Reactive formdaki images alanından dosyayı kaldırın
+      this.productForm.get('images').setValue(this.images); // Reactive formdaki images alanını güncelleyin
+    }
+  
 }
