@@ -56,6 +56,7 @@
                     data-toggle="modal"
                     data-target="#updateModal"
                     class="btn btn-sm btn-primary"
+                    (click)="setProduct(item)"
                   >
                     <i class="fas fa-edit"></i>
                   </button>
@@ -100,12 +101,14 @@
     </div>
   </div>
 </div>
+<app-product-add (getAll)="getAll()"></app-product-add>
 
-<!-- Add Modalı -->
+
+<!-- Update Modalı -->
 
 <div
   class="modal fade"
-  id="addModal"
+  id="updateModal"
   tabindex="-1"
   aria-labelledby="exampleModalLabel"
   aria-hidden="true"
@@ -113,7 +116,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Ürün Ekle</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ürün Güncelle</h1>
         <button
           type="button"
           class="btn-close"
@@ -122,14 +125,15 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="productForm">
+        <form [formGroup]="productUpdateForm">
+          <input type="text" formControlName="id">
           <div class="form-group">
             <label for="name">Ürün Adı:</label>
             <input
               type="text"
               class="form-control"
               id="name"
-              [appValid]="productForm.get('name')?.valid"
+              [appValid]="productUpdateForm.get('name')?.valid"
               formControlName="name"
               
             />
@@ -158,7 +162,7 @@
               class="form-control"
               id="price"
               formControlName="price"
-              [appValid]="productForm.get('price').valid"
+              [appValid]="productUpdateForm.get('price').valid"
               required
             />
             <div *ngIf="price.invalid" class="invalid-feedback">
@@ -186,7 +190,7 @@
               class="form-control"
               id="stock"
               formControlName="stock"
-              [appValid]="productForm.get('stock').valid"
+              [appValid]="productUpdateForm.get('stock').valid"
               required
             />
             <div *ngIf="stock.invalid" class="invalid-feedback">
@@ -218,25 +222,22 @@
         </div>
         <hr>
         <div class="form-group mt-2">
-            <p>Seçilen Resimler</p>
-            <span (click)="removeImage(i)" *ngFor="let image of imageUrls let i = index">
-                <img [src]="image.imageUrl" width="100" class="mx-1">
-            </span>
-        </div>
-
+          <p>Seçilen Resimler</p>
+          <span *ngFor="let image of images; let i = index" class="position-relative">
+            <img [src]="image.startsWith('data:image') ? image : getUrl(image)" width="100" class="mx-1">
+            <i class="fa fa-times-circle position-absolute top-10 end-0 text-danger" style="cursor: pointer;" (click)="removeImage(i)"></i>
+          </span>
+        </div>  
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Kapat
         </button>
-        <button type="button" class="btn btn-primary" [disabled]="!productForm.valid" (click)="addProduct()">
+        <button type="button" class="btn btn-primary" (click)="updateProduct()">
           Kayıt Et
         </button>
       </div>
     </div>
   </div>
 </div>
-
-<!-- Update Modalı -->
-

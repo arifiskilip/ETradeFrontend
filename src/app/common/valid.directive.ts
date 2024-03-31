@@ -19,4 +19,22 @@ export class ValidDirective {
     }
   }
 
+   @HostListener("change") change(){
+    if(this.appValid){
+      this._el.nativeElement.className="form-control is-valid";
+    }
+    else{
+      this._el.nativeElement.className="form-control is-invalid";
+    }
+  }
+
+  @HostListener("click") click(){
+    if(this.appValid){
+      this._el.nativeElement.className="form-control is-valid";
+    }
+    else{
+      this._el.nativeElement.className="form-control is-invalid";
+    }
+  }
+
 }

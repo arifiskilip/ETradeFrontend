@@ -1,0 +1,136 @@
+<!-- Add Modalı -->
+
+<div
+  class="modal fade"
+  id="addModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ürün Ekle</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="productForm">
+          <div class="form-group">
+            <label for="name">Ürün Adı:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              [appValid]="productForm.get('name')?.valid"
+              formControlName="name"
+              
+            />
+            <div *ngIf="name.invalid" class="invalid-feedback">
+              <div *ngIf="name.errors?.['required']">
+                {{ errorMessages.product.name.required }}
+              </div>
+            </div>
+            <div *ngIf="name.invalid" class="invalid-feedback">
+              <div *ngIf="name.errors?.['minlength']">
+                {{ errorMessages.product.name.minLength }}
+              </div>
+            </div>
+            <div *ngIf="name.invalid" class="invalid-feedback">
+              <div *ngIf="name.errors?.['maxlength']">
+                {{ errorMessages.product.name.maxLength }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="price">Fiyat:</label>
+            <input
+              type="number"
+              min="0"
+              max="1000"
+              class="form-control"
+              id="price"
+              formControlName="price"
+              [appValid]="productForm.get('price').valid"
+              required
+            />
+            <div *ngIf="price.invalid" class="invalid-feedback">
+              <div *ngIf="name.errors?.['required']">
+                {{ errorMessages.product.price.required }}
+              </div>
+            </div>
+            <div *ngIf="price.invalid" class="invalid-feedback">
+              <div *ngIf="name.errors?.['min']">
+                {{ errorMessages.product.price.min }}
+              </div>
+            </div>
+            <div *ngIf="price.invalid" class="invalid-feedback">
+              <div *ngIf="price.errors?.['max']">
+                {{ errorMessages.product.price.max }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="stock">Stok:</label>
+            <input
+            type="number"
+            min="0"
+            max="500"
+              class="form-control"
+              id="stock"
+              formControlName="stock"
+              [appValid]="productForm.get('stock').valid"
+              required
+            />
+            <div *ngIf="stock.invalid" class="invalid-feedback">
+              <div *ngIf="stock.errors?.['required']">
+                {{ errorMessages.product.stock.required }}
+              </div>
+            </div>
+            <div *ngIf="stock.invalid" class="invalid-feedback">
+              <div *ngIf="stock.errors?.['min']">
+                {{ errorMessages.product.stock.min }}
+              </div>
+            </div>
+            <div *ngIf="stock.invalid" class="invalid-feedback">
+              <div *ngIf="stock.errors?.['max']">
+                {{ errorMessages.product.stock.max }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-2">
+            <label for="images">Ürün Resimleri</label>
+            <input
+              type="file"
+              name="images"
+              id="images"
+              multiple                     
+              class="form-control"
+              accept=".jpg,.png,.jpeg"
+              (change)="getImages($event)">
+        </div>
+        <hr>
+        <div class="form-group mt-2">
+          <p>Seçilen Resimler</p>
+          <span *ngFor="let image of imageUrls; let i = index" class="position-relative">
+            <img [src]="image.imageUrl" width="100" class="mx-1">
+            <i class="fa fa-times-circle position-absolute top-10 end-0 text-danger" style="cursor: pointer;" (click)="removeImage(i)"></i>
+          </span>
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Kapat
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="!productForm.valid" (click)="addProduct()">
+          Kayıt Et
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

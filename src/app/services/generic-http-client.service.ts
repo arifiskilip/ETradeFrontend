@@ -39,6 +39,14 @@ export class GenericHttpClientService {
     );
   }
 
+  put<T>(url: string, model?: any): Observable<T> {
+    return this.http.put<T>(this.apiUrl + url, model).pipe(
+      tap(_ => this.spinner.hide()),
+      catchError(
+        err => this.handleError(err))
+    );
+  }
+
 
   private handleError(err: any): Observable<never> {
     this.spinner.hide();
