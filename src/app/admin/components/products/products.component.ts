@@ -1,8 +1,8 @@
+import { Product } from './../../../models/product';
 import { Component, Input, OnInit, input } from '@angular/core';
 import { SharedModule } from '../../../common/shared/shared.module';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { GenericHttpClientService } from '../../../services/generic-http-client.service';
-import { Product } from '../../../models/product';
 import { ProductSearchPipe } from '../../../pipes/product-search.pipe';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -24,7 +24,7 @@ import { ProductAddComponent } from './product-add/product-add.component';
         SharedModule,
         ProductSearchPipe,
         ValidDirective,
-        ProductAddComponent,
+        ProductAddComponent
     ]
 })
 export class ProductsComponent implements OnInit {
@@ -175,7 +175,7 @@ export class ProductsComponent implements OnInit {
 
   productUpdateForm: FormGroup;
   images: string[] = [];
-  imageUrls: any[] = [];
+  imageUrls: File[] = [];
 
   getUrl(image:string){ 
     return 'https://localhost:7280/'+image;
@@ -227,7 +227,6 @@ export class ProductsComponent implements OnInit {
       this.productUpdateForm.get('stock').setValue(res.stock);
       this.productUpdateForm.get('images').setValue(res.images);
       this.images = res.images;
-      console.log(this.images)
     })
   }
 
@@ -240,7 +239,7 @@ export class ProductsComponent implements OnInit {
   
         reader.onload = () => {
           const imageUrl = reader.result as string;
-          this.addImage(imageUrl);
+          this.addImage(imageUrl,file);
         };
       } else {
         console.error('Geçersiz dosya türü: ', file.type);
@@ -254,12 +253,29 @@ export class ProductsComponent implements OnInit {
     return allowedTypes.includes(file.type);
   }
   
-  addImage(imageUrl: string) {
-    this.images.push(imageUrl); // Add the image URL to the images array
+  addImage(imageUrl: string,file:File) {
+    this.images.push(imageUrl);
+    this.imageUrls.push(file); // Add the image URL to the images array
+    this.productUpdateForm.get('images').setValue(file);
   }
   
   removeImage(index: number) {
-    this.images.splice(index, 1);
+    let imageUrl= this.images[index];
+    this.swal.callSwal("Resmi silmek istediğinizden eminmisiniz ?","Resim silinecektir","Evet",()=>{
+      if(imageUrl.startsWith('data:image')){
+        this.imageUrls.splice(index,1);
+        this.images.splice(index,1);
+      }
+      else{
+        this.http.post(`Products/UrlByDeleteImage?imagePath=${imageUrl}&productId=${this.id.value}`).subscribe((res:any)=>{
+          this.toastr.success(res.message,"Başarılı");
+          this.getAll();
+          this.images.splice(index, 1);
+        },err=> this.toastr.error("Silme işleminde hata meydana geldi.","Başarısız!"));
+      }
+    })
+    // 
+    // 
   }
   
   updateProduct() {
@@ -269,21 +285,15 @@ export class ProductsComponent implements OnInit {
       formData.append('name', this.name.value);
       formData.append('price', this.price.value);
       formData.append('stock', this.stock.value);
-      for (let index = 0; index < this.images.length; index++) {
-        if(this.images[index].startsWith('data:image')){
-          formData.append('images', this.images[index]);
-        }
+      for (let index = 0; index < this.imageUrls.length; index++) {
+          formData.append('images', this.imageUrls[index]);
       }
-
       this.update(formData);
     }
   }
 
   update(product: FormData) {
     this.spinner.show();
-    product.forEach(element => {
-      console.log(element)
-    });
     this.http.post('Products/Update', product).subscribe((res) => {
       this.toastr.success('Güncelleme işlemi başarılı!', 'Başarılı!');
       this.getAll();

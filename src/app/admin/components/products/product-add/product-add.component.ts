@@ -124,7 +124,8 @@ export class ProductAddComponent implements OnInit {
       name: file.name,
       size: file.size,
     });
-    this.images.push(file); // Reactive formdaki images alanına dosyayı ekleyin
+    this.images.push(file);
+    console.log(this.images); // Reactive formdaki images alanına dosyayı ekleyin
     this.productForm.get('images').setValue(this.images); // Reactive formdaki images alanını güncelleyin
   }
 
