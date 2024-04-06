@@ -16,18 +16,33 @@
                     <a class="nav-link" routerLink="basket">Sepet</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="admin">Panel</a>
+                    <a class="nav-link" routerLink="admin" *ngIf="authService.isAuthenticated">Panel</a>
                 </li>
             </ul>
-            <div class="profile-dropdown d-flex align-items-center">
+            <div class="d-flex align-items-center" *ngIf="!authService.isAuthenticated">
+                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="login">Giriş Yap</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="register">Kayıt Ol</a>
+                </li>
+            </ul>
+            </div>
+            <div class="profile-dropdown d-flex align-items-center" *ngIf="authService.isAuthenticated">
                 <div style="color: white;" class="m-3">
                     Arif İskilip
                 </div>
                 <img src="https://via.placeholder.com/60" alt="Profil Resmi" class="rounded-circle me-2" style="width: 40px; height: 40px;"> <!-- Resim boyutunu büyüttük -->
                 
                 <div class="profile-dropdown-menu">
-                    <a class="dropdown-item" href="#">Ayarlar</a>
-                    <a class="dropdown-item" href="#">Çıkış</a>
+                    <div class="m-2">
+                        <a class="dropdown-item" style="cursor:pointer;">Ayarlar</a>
+                    </div>
+                    <div class="m-2">
+                        <a class="dropdown-item" (click)="logOut()" style="cursor:pointer;">Çıkış Yap</a>
+                    </div>
+                    
                 </div>
             </div>
         </div>

@@ -1,0 +1,17 @@
+<div class="container mt-4">
+    <div class="card">
+      <h2>Kayıt Ekranı</h2>
+      <form [formGroup]="registerForm">
+        <input type="text" id="fullname" formControlName="fullName" placeholder="Ad - Soyad" 
+        required >
+        <input type="text" id="userName" formControlName="userName" placeholder="Kullanıcı adı" 
+        required >
+        <input type="email" id="email" formControlName="email" placeholder="Email" 
+        required>
+        <input type="password" id="password" formControlName="password" placeholder="Şifre" 
+        required >
+        <button type="submit mb-2" (click)="register()" >Kayıt Ol</button>
+      </form>
+      <a href="/register" class="btn btn-primary mt-2" ><i class="fas fa-user-plus"></i> Giriş Ekranı</a>
+    </div>
+  </div>

@@ -15,6 +15,6 @@ export class CustomeErrorMessages{
             min:"'Stok' değeri '0' değerinden büyük olmalı.",
             max:"'Stok' değeri '500' değerinden küçük olmalı.",
         },
-        
     }
+    
 }

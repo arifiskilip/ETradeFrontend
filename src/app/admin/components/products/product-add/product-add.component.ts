@@ -83,7 +83,7 @@ export class ProductAddComponent implements OnInit {
 
   add(product: FormData) {
     this.spinner.show();
-    this.http.post('Products/AddV2', product).subscribe((res) => {
+    this.http.post('Products/Add', product).subscribe((res) => {
       this.toastr.success('Ekleme işlemi başarılı!', 'Başarılı!');
       this.getAll.emit();
     });

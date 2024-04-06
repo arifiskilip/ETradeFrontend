@@ -13,6 +13,8 @@ import { PaginatedModel } from '../../../models/paginatedModel';
 import { Router } from '@angular/router';
 import { SwalService } from '../../../services/swal.service';
 import { ProductAddComponent } from './product-add/product-add.component';
+import { GetAllModel } from '../../../models/getAllModel';
+import { DataResult } from '../../../models/dataResult';
 
 @Component({
     selector: 'app-products',
@@ -62,12 +64,13 @@ export class ProductsComponent implements OnInit {
   getAll() {
     this.spinner.show();
     this.http
-      .get<PaginatedModel<Product[]>>(
+      .get<GetAllModel<PaginatedModel<Product[]>>>(
         `Products/GetAll?pageIndex=${this.currentPage}&pageSize=${this.selectedCount}`
       )
       .subscribe((res) => {
-        this.paginatedProduct = res;
-        this.totalPages = res.pagination.totalPages;
+        console.log(res)  
+        this.paginatedProduct = res.datas;
+        this.totalPages = res.datas.pagination.totalPages;
       });
   }
 
@@ -220,13 +223,13 @@ export class ProductsComponent implements OnInit {
 
   setProduct(product:Product){
     this.spinner.show();
-    this.http.get<Product>(`Products/GetById?id=${product.id}`).subscribe(res=>{
-      this.productUpdateForm.get('id').setValue(res.id);
-      this.productUpdateForm.get('name').setValue(res.name);
-      this.productUpdateForm.get('price').setValue(res.price);
-      this.productUpdateForm.get('stock').setValue(res.stock);
-      this.productUpdateForm.get('images').setValue(res.images);
-      this.images = res.images;
+    this.http.get<DataResult<Product>>(`Products/GetById?id=${product.id}`).subscribe(res=>{
+      this.productUpdateForm.get('id').setValue(res.data.id);
+      this.productUpdateForm.get('name').setValue(res.data.name);
+      this.productUpdateForm.get('price').setValue(res.data.price);
+      this.productUpdateForm.get('stock').setValue(res.data.stock);
+      this.productUpdateForm.get('images').setValue(res.data.images);
+      this.images = res.data.images;
     })
   }
 
@@ -290,6 +293,10 @@ export class ProductsComponent implements OnInit {
       }
       this.update(formData);
     }
+    else{
+      this.toastr.error("Lütfem resim seçiniz!","Hata")
+    }
+   
   }
 
   update(product: FormData) {
