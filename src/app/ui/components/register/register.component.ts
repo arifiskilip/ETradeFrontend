@@ -47,6 +47,7 @@ export class RegisterComponent implements OnInit{
       this.http.post<DataResult<Token>>("Auth/Regiser",this.registerForm.value).subscribe(res=>{
         this.toastr.success(res.message,"Başarılı");
         this.storageService.addToken(res.data.accessToken);
+        this.storageService.addToken(res.data.refreshToken);
         this.authService.identityCheck();
         this.router.navigate([""]);
       },err=> this.toastr.error(err.error.message,"Hata"));

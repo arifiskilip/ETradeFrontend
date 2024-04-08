@@ -11,12 +11,16 @@ export class LocalStorageService {
   addToken(token:string){
     localStorage.setItem("token",token);
   }
+  
+  addRefreshToken(refreshToken:string){
+    localStorage.setItem("refreshToken",refreshToken);
+  }
 
-  getToken():string{
-    return localStorage.getItem("token");
+  getToken(tokenName:string):string{
+    return localStorage.getItem(tokenName);
   }
 
   deleteToken(){
-    localStorage.removeItem("token");
+    localStorage.clear();
   }
 }

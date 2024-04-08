@@ -3,37 +3,32 @@ import { inject } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, of } from 'rxjs';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
   const toastr = inject(ToastrService);
   const spinner = inject(NgxSpinnerService);
+  const authService=inject(AuthService)
+  const router = inject(Router);
 
   return next(req).pipe(catchError(error => {
     spinner.show();
     switch (error.status) {
       case HttpStatusCode.Unauthorized:
 
-        // this.userAuthService.refreshTokenLogin(localStorage.getItem("refreshToken"), (state) => {
-        //   if (!state) {
-        //     const url = this.router.url;
-        //     if (url == "/products")
-        //       this.toastrService.message("Sepete ürün eklemek için oturum açmanız gerekiyor.", "Oturum açınız!", {
-        //         messageType: ToastrMessageType.Warning,
-        //         position: ToastrPosition.TopRight
-        //       });
-        //     else
-        //       this.toastrService.message("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "Yetkisiz işlem!", {
-        //         messageType: ToastrMessageType.Warning,
-        //         position: ToastrPosition.BottomFullWidth
-        //       });
-        //   }
-        // }).then(data => {
-        //   this.toastrService.message("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "Yetkisiz işlem!", {
-        //     messageType: ToastrMessageType.Warning,
-        //     position: ToastrPosition.BottomFullWidth
-        //   });
-        // });
+        authService.refreshTokenLogin(localStorage.getItem("refreshToken"), (state) => {
+          if (!state) {
+            const url = router.url;
+            if (url == "/products")
+              toastr.warning("Sepete ürün eklemek için oturum açmanız gerekiyor.", "Oturum açınız!");
+            else
+              toastr.warning("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "Yetkisiz işlem!");
+          }
+        }).then(data => {
+          toastr.warning("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "Yetkisiz işlem!");
+        });
         toastr.warning("Yetkiniz yok!");
         break;
       case HttpStatusCode.InternalServerError:

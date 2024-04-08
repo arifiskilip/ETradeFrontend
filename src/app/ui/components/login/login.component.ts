@@ -44,6 +44,7 @@ export class LoginComponent implements OnInit{
       this.http.post<DataResult<Token>>("auth/login",this.loginForm.value).subscribe(res=>{
         this.toastr.success(res.message,"Başarılı");
         this.storageService.addToken(res.data.accessToken);
+        this.storageService.addRefreshToken(res.data.refreshToken);
         this.authService.identityCheck();
         this.activatedRoute.queryParams.subscribe(params=>{
           if(params["returnUrl"]){
