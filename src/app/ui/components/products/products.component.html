@@ -1,1 +1,69 @@
-<p>products works!</p>
+<div class="container ">
+    <div class="row col-md-12">
+      <div class="col-md-6">
+       
+      </div>
+      <div class="col-md-6">
+        <input type="search" [(ngModel)]="searchText" class="form-control mt-4" placeholder="Ara">
+      </div>
+    </div>
+      <div class="row mt-2">
+        @for (product of paginatedProduct.items |productSearchPipe:searchText; track $index ) {
+          <div class="col-md-3 mb-4">
+            <div class="card">
+              @if (product.images != null) {
+                <img [src]="tools.genareteImagePath(product.images[0])" class="card-img-top" alt="Araba Resmi">
+              }
+              @else {
+                <img [src]="tools.genareteImagePath('/Images/default.jpg')" class="card-img-top" alt="Araba Resmi">
+              }
+              <div class="card-body">
+                <h5 class="card-title">{{product.name}}</h5>
+                <p class="card-text">
+                  <i class="fas fa-gas-pump mr-2"></i> {{product.price}}
+                  <br>
+                  <i class="fas fa-cogs mr-2"></i> {{product.stock}}
+                  <br>
+                  <i class="fas fa-road mr-2"></i> {{product.createdDate}}
+                </p>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#detayModal">Detay</button>
+                <button class="btn btn-success m-2">Sepete Ekle</button>
+              </div>
+            </div>
+          </div>
+        }
+        @empty {
+          <div class="alert alert-info text-center">
+            Veri yok!
+        </div>
+        }
+     
+        </div>
+            <!-- Pagination -->
+            <select name="pageSize" id="pageSize" class="form-control text-center" style="width: 65px; float: left;" [(ngModel)]="pageSize" (change)="goToChangeSelectedCount()">
+              <option>5</option>
+              <option>10</option>
+              <option>20</option>
+          </select>
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            <li class="page-item">
+              <a class="page-link" style="cursor: pointer;" (click)="goToFirstPage()">İlk</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" style="cursor: pointer;" (click)="prevPage()">Önceki</a>
+            </li>
+            <li class="page-item" *ngFor="let pageNumber of getPageNumbers()">
+              <a class="page-link" style="cursor: pointer;" (click)="goToPage(pageNumber)" [ngClass]="{'active' : pageNumber==currentPage}">{{ pageNumber }}</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" style="cursor: pointer;" (click)="nextPage()">Sonraki</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" style="cursor: pointer;" (click)="goToLastPage()">Son</a>
+            </li>
+          </ul>
+        </nav>
+    </div>
+    <!-- Detay Modalı -->
+  

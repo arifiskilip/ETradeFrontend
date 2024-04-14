@@ -73,6 +73,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'products/:page',
+    loadComponent: () =>
+      import('./ui/components/products/products.component').then(
+        (c) => c.ProductsComponent
+      ),
+  },
+  {
     path: 'basket',
     loadComponent: () =>
       import('./ui/components/basket/basket.component').then(
