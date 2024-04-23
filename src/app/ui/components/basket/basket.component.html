@@ -1,1 +1,39 @@
-<p>basket works!</p>
+<div class="container">
+    <h1 class="text-center mt-5 mb-4">Sepetiniz</h1>
+    <div id="cart-items" class="row">
+        @for (item of baskets; track $index) {
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                  @if (item.product.images != null) {
+                    <img [src]="tools.genareteImagePath(item.product.images[0])" class="card-img-top" alt="Araba Resmi">
+                  }
+                  @else {
+                    <img [src]="tools.genareteImagePath('/Images/default.jpg')" class="card-img-top" alt="Araba Resmi">
+                  }
+                    <div class="card-body">
+                      <h5 class="card-title">{{item.product.name}}</h5>
+                      <p class="card-text">Fiyat: {{item.product.price}} TL</p>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <button class="btn btn-outline-secondary btn-decrease" type="button" (click)="removeProduct(item,1)"><i class="fas fa-minus"></i></button>
+                        </div>
+                        <input type="text" class="form-control text-center item-quantity" value="{{item.quantity}}" disabled>
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary btn-increase" type="button" (click)="addProduct(item
+                        )"><i class="fas fa-plus"></i></button>
+                        </div>
+                      </div>
+                      <p class="card-text">Toplam Fiyat: <span class="total-price">{{item.quantity * item.product.price}} TL</span></p>
+                      <button class="btn btn-danger btn-remove" (click)="removeProduct(item)"><i class="fas fa-trash"></i> Kaldır</button>
+                    </div>
+                  </div>
+            </div>
+        }
+    </div>
+    <div id="cart-total" class="row mt-3">
+      <div class="col-12 text-right">
+        <h5>Toplam: {{baskets | basketTotalCountCalculate}}<span id="total-price"> TL</span></h5>
+        <button class="btn btn-outline-secondary mt-2">Sepeti Onayla</button>
+      </div>
+    </div>
+</div>

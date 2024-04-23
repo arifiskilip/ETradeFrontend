@@ -8,6 +8,9 @@ import { PaginatedModel } from '../../../models/paginatedModel';
 import { Product } from '../../../models/product';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductSearchPipe } from '../../../pipes/product-search.pipe';
+import { _isAuthenticated } from '../../../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
+import { Basket } from '../../../models/basket';
 
 @Component({
   selector: 'app-products',
@@ -25,7 +28,8 @@ export class ProductsComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private http: GenericHttpClientService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private toastr:ToastrService
   ) {}
 
   searchText: string;
@@ -141,7 +145,20 @@ export class ProductsComponent implements OnInit {
         });
       }
     });
-
+  }
   
+  addBasket(product:Product){
+       if(!_isAuthenticated){
+        this.router.navigate(["login"], {queryParams:{returnUrl:'/products'}});
+        this.toastr.warning("Oturum açmanız gerekiyor!","Yetkisiz erişim!");
+       }
+       else{
+        let basket:Basket = new Basket();
+       basket.productId = product.id;
+       basket.quantity = 1;
+       this.http.post('Baskets/Add',basket).subscribe(res=>{
+        this.toastr.success("Ekleme işlemi başarılı",product.name+"-ürün sepete eklendi!");
+       })
+       }
   }
 }

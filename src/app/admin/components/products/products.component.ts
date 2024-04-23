@@ -61,6 +61,12 @@ export class ProductsComponent implements OnInit {
     private formBuilder:FormBuilder
   ) {}
 
+
+  basketAdd(item:Product){
+    this.http.post("Baskets/Add",{productId:item.id,quantity:1}).subscribe(res=>{
+      console.log(res);
+    },err=> console.log(err))
+  }
   getAll() {
     this.spinner.show();
     this.http

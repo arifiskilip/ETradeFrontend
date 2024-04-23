@@ -85,5 +85,6 @@ export const routes: Routes = [
       import('./ui/components/basket/basket.component').then(
         (c) => c.BasketComponent
       ),
+      canActivate:[authGuard]
   }
 ];
