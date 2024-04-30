@@ -157,6 +157,7 @@ export class ProductsComponent implements OnInit {
        basket.productId = product.id;
        basket.quantity = 1;
        this.http.post('Baskets/Add',basket).subscribe(res=>{
+        console.log(res);
         this.toastr.success("Ekleme işlemi başarılı",product.name+"-ürün sepete eklendi!");
        })
        }

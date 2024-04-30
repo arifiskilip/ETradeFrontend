@@ -3,9 +3,9 @@
       <h2>Giriş Ekranı</h2>
       <form [formGroup]="loginForm">
         <input type="text" id="userNameOrEmail" formControlName="userNameOrEmail" placeholder="Kullanıcı adı & E-posta" 
-        required >
+        required autocomplete="userNameOrEmail">
         <input type="password" formControlName="password" id="password"  placeholder="Şifre" 
-        required>
+        required autocomplete="password">
         <button type="submit mb-2" (click)="login()">Giriş Yap</button>
       </form>
       <a href="/register" class="btn btn-primary mt-2"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
